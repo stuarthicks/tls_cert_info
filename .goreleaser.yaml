@@ -55,7 +55,7 @@ brews:
       system "#{bin}/tls_cert_info -h"
     repository:
       owner: stuarthicks
-      name: homebrew-brews
+      name: homebrew-tap
     directory: Formula
     commit_author:
       name: goreleaserbot
