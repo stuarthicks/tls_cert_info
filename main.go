@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha1"
 	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -17,6 +18,10 @@ func main() {
 	flag.StringVar(&domain, "domain", "", "Domain to connect to")
 	flag.StringVar(&port, "port", "443", "Override port to connect to")
 	flag.StringVar(&sni, "sni", "", "Override SNI domain (default matches -domain)")
+
+	var printJSON bool
+	flag.BoolVar(&printJSON, "json", false, "Print all cert information as JSON")
+
 	flag.Parse()
 
 	if sni == "" {
@@ -36,6 +41,10 @@ func main() {
 
 	var certs = conn.ConnectionState().PeerCertificates
 	for _, cert := range certs {
+		if printJSON {
+			json.NewEncoder(os.Stdout).Encode(cert)
+			os.Exit(0)
+		}
 		var sans = cert.DNSNames
 		sort.Strings(sans)
 		fmt.Printf("Fingerprint:\t%s\n", strings.ReplaceAll(fmt.Sprintf("SHA1=% X", sha1.Sum(cert.Raw)), " ", ":"))
