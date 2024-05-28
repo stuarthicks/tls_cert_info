@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha1"
 	"crypto/tls"
 	"flag"
 	"fmt"
@@ -37,8 +38,9 @@ func main() {
 	for _, cert := range certs {
 		var sans = cert.DNSNames
 		sort.Strings(sans)
-		fmt.Printf("Issuer:\t\t%s\n", strings.Join(cert.Issuer.Organization, ", "))
-		fmt.Printf("Common Name:\t%s\n", cert.Subject.CommonName)
+		fmt.Printf("Fingerprint:\t%s\n", strings.ReplaceAll(fmt.Sprintf("SHA1=% X", sha1.Sum(cert.Raw)), " ", ":"))
+		fmt.Printf("Issuer:\t\t%s\n", cert.Issuer.String())
+		fmt.Printf("Subject:\t%s\n", cert.Subject.String())
 		fmt.Printf("Subject Alternative Names:\n")
 		for _, san := range sans {
 			fmt.Printf("\t%s\n", san)
