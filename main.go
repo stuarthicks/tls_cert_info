@@ -40,11 +40,12 @@ func main() {
 	defer conn.Close()
 
 	var certs = conn.ConnectionState().PeerCertificates
-	for _, cert := range certs {
+	for i, cert := range certs {
 		if printJSON {
 			json.NewEncoder(os.Stdout).Encode(cert)
 			os.Exit(0)
 		}
+		fmt.Printf("\n--- Certificate %d ---\n", i+1)
 		var sans = cert.DNSNames
 		sort.Strings(sans)
 		fmt.Printf("Fingerprint:\t%s\n", strings.ReplaceAll(fmt.Sprintf("SHA1=% X", sha1.Sum(cert.Raw)), " ", ":"))
@@ -58,7 +59,5 @@ func main() {
 		fmt.Printf("End Date:\t%s\n", cert.NotAfter.Format("2006-01-02"))
 		fmt.Printf("Remaining Days:\t%d\n", int(time.Until(cert.NotAfter).Hours()/24))
 
-		// Stop after first cert. Subsequent certs are intermediate or root CAs.
-		os.Exit(0)
 	}
 }
