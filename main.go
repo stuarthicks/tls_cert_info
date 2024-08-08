@@ -52,8 +52,11 @@ func main() {
 		fmt.Printf("Issuer:\t\t%s\n", cert.Issuer.String())
 		fmt.Printf("Subject:\t%s\n", cert.Subject.String())
 		fmt.Printf("Subject Alternative Names:\n")
-		for _, san := range sans {
-			fmt.Printf("\t%s\n", san)
+		if len(sans) > 0 {
+			fmt.Printf("Subject Alternative Names:\n")
+			for _, san := range sans {
+				fmt.Printf("\t%s\n", san)
+			}
 		}
 		fmt.Printf("Start Date:\t%s\n", cert.NotBefore.Format("2006-01-02"))
 		fmt.Printf("End Date:\t%s\n", cert.NotAfter.Format("2006-01-02"))
