@@ -62,5 +62,12 @@ func main() {
 		fmt.Printf("End Date:\t%s\n", cert.NotAfter.Format("2006-01-02"))
 		fmt.Printf("Remaining Days:\t%d\n", int(time.Until(cert.NotAfter).Hours()/24))
 
+		// RFC 5280, 4.2.2.1 (Authority Information Access)
+		if len(cert.OCSPServer) > 1 || len(cert.IssuingCertificateURL) > 0 {
+			fmt.Printf("\n")
+			fmt.Printf("X509v3 Extension - Authority Information Access\n")
+			fmt.Printf("OCSP Server: %s\n", strings.Join(cert.OCSPServer, ", "))
+			fmt.Printf("Issuing Certificate URL: %s\n", strings.Join(cert.IssuingCertificateURL, ", "))
+		}
 	}
 }
