@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"crypto/tls"
 	"encoding/json"
@@ -45,7 +46,14 @@ func main() {
 			json.NewEncoder(os.Stdout).Encode(cert)
 			os.Exit(0)
 		}
-		fmt.Printf("\n--- Certificate %d ---\n", i+1)
+		var certType = "Leaf"
+		if cert.IsCA {
+			certType = "Intermediate"
+		}
+		if bytes.Equal(cert.RawSubject, cert.RawIssuer) {
+			certType = "Root"
+		}
+		fmt.Printf("\n--- Certificate %d (%s) ---\n", i+1, certType)
 		var sans = cert.DNSNames
 		sort.Strings(sans)
 		fmt.Printf("Fingerprint:\t%s\n", strings.ReplaceAll(fmt.Sprintf("SHA1=% X", sha1.Sum(cert.Raw)), " ", ":"))
