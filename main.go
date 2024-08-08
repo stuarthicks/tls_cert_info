@@ -43,7 +43,9 @@ func main() {
 	var certs = conn.ConnectionState().PeerCertificates
 	for i, cert := range certs {
 		if printJSON {
-			json.NewEncoder(os.Stdout).Encode(cert)
+			if err := json.NewEncoder(os.Stdout).Encode(cert); err != nil {
+				log.Fatalf("failed to encode response as json: %s", err.Error())
+			}
 			os.Exit(0)
 		}
 		var certType = "Leaf"
