@@ -15,14 +15,16 @@ import (
 )
 
 func main() {
-	var address, port, sni, ip string
-	var akamaiStaging bool
-	flag.StringVar(&address, "domain", "", "Domain to connect to [Deprecated: use -address]")
+	var address, port, sni string
+	var akamaiStaging, completeChain bool
 	flag.StringVar(&address, "address", "", "Address to connect to. Can be a hostname or IP address.")
-	flag.StringVar(&ip, "ip", "", "Override IP address to connect to (default is to resolve -domain)")
 	flag.StringVar(&port, "port", "443", "Override port to connect to")
-	flag.StringVar(&sni, "sni", "", "Override SNI domain (default matches -domain)")
-	flag.BoolVar(&akamaiStaging, "akamai-staging", false, "Resolve the -domain using Akamai's Staging Envionment")
+	flag.StringVar(&sni, "sni", "", "Override SNI domain (default matches -address)")
+	flag.BoolVar(&akamaiStaging, "akamai-staging", false, "Resolve -address using Akamai's Staging Envionment")
+	flag.BoolVar(&completeChain, "chain", false, "Print entire cert chain, rather than only the leaf node")
+
+	// Deprecated
+	flag.StringVar(&address, "domain", "", "Domain to connect to [Deprecated: use -address]")
 
 	var printJSON bool
 	flag.BoolVar(&printJSON, "json", false, "Print all cert information as JSON")
@@ -89,6 +91,9 @@ func main() {
 			fmt.Printf("X509v3 Extension - Authority Information Access\n")
 			fmt.Printf("OCSP Server: %s\n", strings.Join(cert.OCSPServer, ", "))
 			fmt.Printf("Issuing Certificate URL: %s\n", strings.Join(cert.IssuingCertificateURL, ", "))
+		}
+		if !completeChain {
+			os.Exit(0)
 		}
 	}
 }
