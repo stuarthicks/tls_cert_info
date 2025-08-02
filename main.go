@@ -39,7 +39,7 @@ func main() {
 		address += ".edgekey-staging.net"
 	}
 
-	var conf = tls.Config{
+	conf := tls.Config{
 		InsecureSkipVerify: true,
 		ServerName:         sni,
 	}
@@ -54,7 +54,7 @@ func main() {
 	}
 	defer conn.Close()
 
-	var certs = conn.ConnectionState().PeerCertificates
+	certs := conn.ConnectionState().PeerCertificates
 	for i, cert := range certs {
 		if printJSON {
 			if err := json.NewEncoder(os.Stdout).Encode(cert); err != nil {
@@ -62,7 +62,7 @@ func main() {
 			}
 			os.Exit(0)
 		}
-		var certType = "Leaf"
+		certType := "Leaf"
 		if cert.IsCA {
 			certType = "Intermediate"
 		}
@@ -70,7 +70,7 @@ func main() {
 			certType = "Root"
 		}
 		fmt.Printf("\n--- Certificate %d (%s) ---\n", i+1, certType)
-		var sans = cert.DNSNames
+		sans := cert.DNSNames
 		sort.Strings(sans)
 		fmt.Printf("Fingerprint:\t%s\n", strings.ReplaceAll(fmt.Sprintf("SHA1=% X", sha1.Sum(cert.Raw)), " ", ":"))
 		fmt.Printf("Subject:\t%s\n", cert.Subject.String())
