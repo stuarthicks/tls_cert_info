@@ -25,6 +25,10 @@ notAfter=Mar  7 23:59:59 2025 GMT
 
 ## Install
 
+Nix:
+
+    nix run github:stuarthicks/tls_cert_info
+
 Using Homebrew:
 
     brew install stuarthicks/brews/tls_cert_info
